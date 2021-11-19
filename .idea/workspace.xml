@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9ef89e3d-c669-43f0-b38e-5f9c2b1c5256" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/image-resizer.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture1.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture10.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture11.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture12.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture13.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture14.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture2.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture3.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture4.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture6.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture7.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture8.JPG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/Capture9.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/bike10.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc_images/bike5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_common/image_common.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_resizer.go" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1rJ7OfNscbhCqK7aQCkW5TY4bkr" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="configurable..is.expanded" value="false" />
+    <property name="configurable.GoLibrariesConfigurable.is.expanded" value="true" />
+    <property name="go.formatter.settings.were.checked" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../markdownscanner" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
+  </component>
+  <component name="RunManager" selected="Go Build.go build image_common.go">
+    <configuration name="go build image_common.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="image-resizer" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/image_common/image_common.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build image_resizer.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="image-resizer" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/image_resizer.go" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build image_common.go" />
+        <item itemvalue="Go Build.go build image_resizer.go" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+</project>
