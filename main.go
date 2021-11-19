@@ -1,8 +1,9 @@
-package image_common
+package main
 
 import (
 	"github.com/anthonynsimon/bild/imgio"
 	"github.com/anthonynsimon/bild/transform"
+	"gopkg.in/yaml.v2"
 	"image"
 	"io/ioutil"
 	"log"
@@ -12,6 +13,12 @@ import (
 	"strings"
 	"sync"
 )
+
+type Parameters struct {
+	SrcDir string `yaml:"SrcDir"`
+	DstDir string `yaml:"DstDir"`
+	Ratio  []int  `yaml:"Ratio"`
+}
 
 type Img struct {
 	Img      image.Image
@@ -101,4 +108,28 @@ func ImgRes(c <-chan Img, wg *sync.WaitGroup) {
 			}
 		}()
 	}
+}
+
+func main() {
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Fatalln("Could not get current directory")
+	}
+
+	parametersFile, err := ioutil.ReadFile(pwd + string(os.PathSeparator) + "parameters.txt")
+	if err != nil {
+		log.Fatalln("Could not find parameters file\nLooked for it at: " + pwd + string(os.PathSeparator) + "parameters.txt")
+	}
+
+	var parameters Parameters
+	err = yaml.Unmarshal(parametersFile, &parameters)
+	if err != nil {
+		log.Fatalln("parameters.txt has an invalid format")
+	}
+
+	c := ImgGen(parameters.SrcDir, parameters.DstDir, parameters.Ratio)
+	var wg sync.WaitGroup
+	wg.Add(runtime.NumCPU())
+	ImgRes(c, &wg)
+	wg.Wait()
 }
