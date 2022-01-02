@@ -28,6 +28,30 @@ type Img struct {
 	Ratio    int
 }
 
+func main() {
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Fatalln("Could not get current directory")
+	}
+
+	parametersFile, err := ioutil.ReadFile(pwd + string(os.PathSeparator) + "parameters.txt")
+	if err != nil {
+		log.Fatalln("Could not find parameters file\nLooked for it at: " + pwd + string(os.PathSeparator) + "parameters.txt")
+	}
+
+	var parameters Parameters
+	err = yaml.Unmarshal(parametersFile, &parameters)
+	if err != nil {
+		log.Fatalln("parameters.txt has an invalid format")
+	}
+
+	c := ImgGen(parameters.SrcDir, parameters.DstDir, parameters.Ratio)
+	var wg sync.WaitGroup
+	wg.Add(runtime.NumCPU())
+	ImgRes(c, &wg)
+	wg.Wait()
+}
+
 func ImgGen(srcDir, dstDir string, ratios []int) <-chan Img {
 
 	if !strings.HasSuffix(srcDir, string(os.PathSeparator)) {
@@ -40,7 +64,6 @@ func ImgGen(srcDir, dstDir string, ratios []int) <-chan Img {
 	_, err := os.Stat(srcDir)
 	if os.IsNotExist(err) {
 		log.Fatalf("Directory with images to be resized (%s) does not exist\n", srcDir)
-
 	}
 
 	_, err = os.Stat(dstDir)
@@ -108,28 +131,4 @@ func ImgRes(c <-chan Img, wg *sync.WaitGroup) {
 			}
 		}()
 	}
-}
-
-func main() {
-	pwd, err := os.Getwd()
-	if err != nil {
-		log.Fatalln("Could not get current directory")
-	}
-
-	parametersFile, err := ioutil.ReadFile(pwd + string(os.PathSeparator) + "parameters.txt")
-	if err != nil {
-		log.Fatalln("Could not find parameters file\nLooked for it at: " + pwd + string(os.PathSeparator) + "parameters.txt")
-	}
-
-	var parameters Parameters
-	err = yaml.Unmarshal(parametersFile, &parameters)
-	if err != nil {
-		log.Fatalln("parameters.txt has an invalid format")
-	}
-
-	c := ImgGen(parameters.SrcDir, parameters.DstDir, parameters.Ratio)
-	var wg sync.WaitGroup
-	wg.Add(runtime.NumCPU())
-	ImgRes(c, &wg)
-	wg.Wait()
 }
