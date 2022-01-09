@@ -1,3 +1,0 @@
-SrcDir: /tmp/img
-DstDir: /tmp/resized
-Ratio: [20, 50]

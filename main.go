@@ -1,134 +1,84 @@
 package main
 
 import (
+	"flag"
 	"github.com/anthonynsimon/bild/imgio"
 	"github.com/anthonynsimon/bild/transform"
-	"gopkg.in/yaml.v2"
-	"image"
 	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
-	"strconv"
 	"strings"
 	"sync"
 )
 
-type Parameters struct {
-	SrcDir string `yaml:"SrcDir"`
-	DstDir string `yaml:"DstDir"`
-	Ratio  []int  `yaml:"Ratio"`
-}
-
-type Img struct {
-	Img      image.Image
-	Filename string
-	SrcDir   string
-	DstDir   string
-	Ratio    int
-}
-
 func main() {
-	pwd, err := os.Getwd()
+	src := flag.String("src", "/home/daniel/Offtopic/Images/mobile pix/", "Directory where images to be resized are")
+	dst := flag.String("name", "/tmp/resized", "Directory where resized images will go")
+	flag.Parse()
+
+	if *src == *dst { //I don't want images to go to the same place as to avoid the risk of overwriting them
+		log.Fatalln("Source and destination directories cannot be the same")
+	}
+
+	_, err := os.Stat(*src)
 	if err != nil {
-		log.Fatalln("Could not get current directory")
+		log.Fatalln("Can't os.Stat() source directory:", err)
 	}
 
-	parametersFile, err := ioutil.ReadFile(pwd + string(os.PathSeparator) + "parameters.txt")
-	if err != nil {
-		log.Fatalln("Could not find parameters file\nLooked for it at: " + pwd + string(os.PathSeparator) + "parameters.txt")
-	}
-
-	var parameters Parameters
-	err = yaml.Unmarshal(parametersFile, &parameters)
-	if err != nil {
-		log.Fatalln("parameters.txt has an invalid format")
-	}
-
-	c := ImgGen(parameters.SrcDir, parameters.DstDir, parameters.Ratio)
-	var wg sync.WaitGroup
-	wg.Add(runtime.NumCPU())
-	ImgRes(c, &wg)
-	wg.Wait()
-}
-
-func ImgGen(srcDir, dstDir string, ratios []int) <-chan Img {
-
-	if !strings.HasSuffix(srcDir, string(os.PathSeparator)) {
-		srcDir = srcDir + string(os.PathSeparator)
-	}
-	if !strings.HasSuffix(dstDir, string(os.PathSeparator)) {
-		dstDir = dstDir + string(os.PathSeparator)
-	}
-
-	_, err := os.Stat(srcDir)
+	dstDir, err := os.Stat(*dst)
 	if os.IsNotExist(err) {
-		log.Fatalf("Directory with images to be resized (%s) does not exist\n", srcDir)
+		mkdirErr := os.Mkdir(*dst, 0755)
+		if mkdirErr != nil {
+			log.Fatalln("Unable to create destination directory:", mkdirErr)
+		}
 	}
-
-	_, err = os.Stat(dstDir)
-	if os.IsNotExist(err) {
-		err = os.Mkdir(dstDir, 0755)
-		if err != nil {
-			log.Fatalf("Cannot create destination directory at %s", dstDir)
+	if err == nil {
+		if dstDir.IsDir() {
+			log.Println("Destination directory is a directory and already exists. Neat!")
+		} else {
+			log.Fatalln("Destination directory is a file, exiting")
 		}
 	}
 
-	for _, rt := range ratios {
-		_, err := os.Stat(dstDir + strconv.Itoa(rt))
-		if os.IsNotExist(err) {
-			err = os.Mkdir(dstDir+strconv.Itoa(rt), 0755)
-			if err != nil {
-				log.Fatalf("Cannot create destination directory at %s", dstDir+strconv.Itoa(rt))
-			}
-		}
-	}
-
-	files, err := ioutil.ReadDir(srcDir)
+	srcFiles, err := ioutil.ReadDir(*src)
 	if err != nil {
-		log.Fatalf("Unable to read the files from %s", srcDir)
+		log.Fatalln("Unable to read contents of source directory:", err)
 	}
 
-	out := make(chan Img)
+	ch := make(chan string)
+
 	go func() {
-		for _, file := range files {
-			for _, rt := range ratios {
-				_, err := os.Stat(dstDir + strconv.Itoa(rt) + string(os.PathSeparator) + file.Name())
-				if os.IsNotExist(err) {
-					img, err := imgio.Open(srcDir + file.Name())
-					if err != nil {
-						continue
-					}
-					imgc := Img{
-						Img:      img,
-						Filename: file.Name(),
-						SrcDir:   srcDir,
-						DstDir:   dstDir,
-						Ratio:    rt,
-					}
-					out <- imgc
-				} else {
-					log.Println("Already resized:", file.Name())
-				}
+		for _, srcFile := range srcFiles {
+			if !strings.HasSuffix(srcFile.Name(), ".jpg") {
+				continue //if not an image, don't do anything
 			}
+			ch <- srcFile.Name()
 		}
-		close(out)
+		close(ch)
 	}()
-	return out
-}
 
-func ImgRes(c <-chan Img, wg *sync.WaitGroup) {
+	var wg sync.WaitGroup
 	for i := 0; i < runtime.NumCPU(); i++ {
+		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			for i := range c {
-				log.Println("Resizing:", i.Filename)
-				iRes := transform.Resize(i.Img, i.Img.Bounds().Dx()*i.Ratio/100, i.Img.Bounds().Dy()*i.Ratio/100, transform.Linear)
-				err := imgio.Save(i.DstDir+strconv.Itoa(i.Ratio)+string(os.PathSeparator)+i.Filename, iRes, imgio.JPEGEncoder(82))
+			for imgName := range ch {
+				log.Println(imgName)
+				img, err := imgio.Open(*src + string(os.PathSeparator) + imgName)
 				if err != nil {
-					log.Fatalf("Unable to save file. Error: %s", err)
+					log.Println("Couldn't open", imgName, "as image:", err)
+					continue
 				}
+				resized := transform.Resize(img, img.Bounds().Dx()/2, img.Bounds().Dy()/2, transform.Linear)
+				err = imgio.Save(*dst+string(os.PathSeparator)+imgName, resized, imgio.JPEGEncoder(82))
+				if err != nil {
+					log.Fatalln("Unable to save image:", err)
+				}
+
 			}
 		}()
 	}
+	wg.Wait()
+	log.Println("Program finished")
 }
